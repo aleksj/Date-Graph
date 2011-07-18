@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Date Graph d3</title>
+    
+    <style type="text/css" media="screen">
+        path {stroke: steelblue;stroke-width: 2;fill: none;}
+        text {font-family: Arial;font-size: 9pt;}
+    </style>
+    
+    <script src="d3.js" type="text/javascript"></script>
+
+</head>
+<body>
+    <script type="text/javascript" charset="utf-8">
+debugger;
+        var data = [3, 6, 2, 7, 5, 9, 2, 8, 3, 9, 4, 10, 5, 8, 1, 8, 3 , 10 , 1, 6, 2, 4, 1, 8, 3, 5, 0, 6, 2, 10, 7],
+            w = 980,
+            h = 300,
+            marginX = 25,
+            marginY = 20,
+            y = d3.scale.linear().domain([0, d3.max(data)]).range([0 + marginY, h - marginY]),
+            x = d3.scale.linear().domain([0, data.length]).range([0 + marginX, w - marginX]);
+
+        var vis = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
+        var g = vis.append("svg:g").attr("transform", "translate(0, 300)");
+        var line = d3.svg.line().x(function(d, i) { return x(i); }).y(function(d) { return -1 * y(d); });
+        g.append("svg:path").attr("d", line(data));
+        g.append("svg:line").attr("x1", x(0)).attr("y1", -1 * y(0)).attr("x2", x(w)).attr("y2", -1 * y(0)).attr("stroke", "#000").attr("stroke-width", 2);
+        g.append("svg:line").attr("x1", x(0)).attr("y1", -1 * y(0)).attr("x2", x(0)).attr("y2", -1 * y(d3.max(data))-20).attr("stroke", "#000").attr("stroke-width", 2);
+
+        g.selectAll(".xLabel").data(x.ticks(5)).enter().append("svg:text").attr("class", "xLabel").text(String).attr("x", function(d) { return x(d) }).attr("y", 0).attr("text-anchor", "middle");
+        g.selectAll(".yLabel").data(y.ticks(4)).enter().append("svg:text").attr("class", "yLabel").text(String).attr("x", 0).attr("y", function(d) { return -1 * y(d) }).attr("text-anchor", "right").attr("dy", 4);
+
+        g.selectAll(".xTicks").data(x.ticks(5)).enter().append("svg:line").attr("class", "xTicks").attr("x1", function(d) { return x(d); }).attr("y1", -1 * y(0)).attr("x2", function(d) { return x(d); }).attr("y2", -1 * y(-0.3)).attr("stroke", "#000");
+        g.selectAll(".yTicks").data(y.ticks(4)).enter().append("svg:line").attr("class", "yTicks").attr("y1", function(d) { return -1 * y(d); }).attr("x1", x(-0.3)).attr("y2", function(d) { return -1 * y(d); }).attr("x2", x(0)).attr("stroke", "#000");
+
+        for (var i = 1; i < 31; i++) {
+        	g.append("svg:line").attr("x1", x(0)+(30*i)).attr("y1", -1 * y(0)).attr("x2", x(0)+(30*i)).attr("y2", -1 * y(d3.max(data))).attr("fill-opacity", .3).attr("stroke", "gray").attr("stroke-width", 1);
+        }
+        
+        for (var j = 1; j < 11; j++) {
+            g.append("svg:line").attr("x1", x(0)).attr("y1", -1 * y(0) - 26*j).attr("x2", x(w)).attr("y2", -1 * y(0)-26*j).attr("fill-opacity", .3).attr("stroke", "gray").attr("stroke-width", 1);        	
+        }
+    </script>
+</body>
+</html>
